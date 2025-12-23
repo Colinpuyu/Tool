@@ -1,0 +1,5 @@
+{
+  "name": "Construction Enclosure Calculator",
+  "description": "A precise material calculator for construction enclosure projects based on dimensions and enclosure status.",
+  "requestFramePermissions": []
+}
