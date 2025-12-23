@@ -20,30 +20,38 @@ export const calculateMaterials = (
   const ABS = Math.abs;
   const ROUND = Math.round;
 
+  // Base context with static helpers and inputs
+  const baseContext = {
+    L, W, D,
+    MAX, MIN, INT, CEIL, ABS, ROUND
+  };
+
   rules.forEach(rule => {
     try {
-      // Create a function that has access to variables and previous results
-      // We pass 'results' so formulas can reference previous calculated fields by id (e.g. 'midPole')
-      
-      // We construct a context object with all variables
-      const context = {
-        L, W, D,
-        MAX, MIN, INT, CEIL, ABS, ROUND,
-        ...results // Allow referencing previously calculated values
-      };
+      // Combine base context with accumulated results
+      // We must spread results so subsequent formulas can reference previous values
+      const context = { ...baseContext, ...results };
 
-      const keys = Object.keys(context);
-      const values = Object.values(context);
+      // CRITICAL FIX: Filter keys to ensure they are valid JavaScript identifiers.
+      // If 'results' contains a key like "invalid-id" or "123", passing it to new Function()
+      // as an argument name throws a SyntaxError (Invalid token) before execution starts.
+      const validEntries = Object.entries(context).filter(([key]) => 
+        /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key)
+      );
+      
+      const keys = validEntries.map(([k]) => k);
+      const values = validEntries.map(([, v]) => v);
 
       // Safe evaluation using Function constructor
-      // Note: In a real untrusted env this is risky, but for a local tool it's acceptable
+      // If the formula references a variable that was filtered out (due to invalid ID),
+      // it will throw a ReferenceError (caught below) instead of crashing with SyntaxError.
       const func = new Function(...keys, `return ${rule.formula};`);
       
       const value = func(...values);
       results[rule.id] = typeof value === 'number' && !isNaN(value) ? value : 0;
       
     } catch (error) {
-      console.error(`Error calculating rule ${rule.id}:`, error);
+      console.warn(`Error calculating rule ${rule.id} (${rule.label}):`, error);
       results[rule.id] = 0;
     }
   });

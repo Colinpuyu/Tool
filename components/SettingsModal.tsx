@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { X, Save, Upload, Download, RotateCcw, Plus, Trash2, HelpCircle } from 'lucide-react';
+import { X, Save, Upload, Download, RotateCcw, Plus, Trash2, HelpCircle, AlertTriangle } from 'lucide-react';
 import { CalculationRule } from '../types';
 import { INITIAL_RULES } from '../utils/initialRules';
 
@@ -20,19 +20,26 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ rules, onSave, onClose })
   };
 
   const addRule = () => {
-    setLocalRules([...localRules, { id: `field_${Date.now()}`, label: '新项目', formula: '0' }]);
+    const newId = `field_${Date.now()}`;
+    setLocalRules([...localRules, { id: newId, label: '新项目', formula: '0' }]);
   };
 
   const removeRule = (index: number) => {
-    if (confirm('确定删除此项目吗？')) {
+    if (window.confirm('确定删除此项目吗？')) {
       const newRules = localRules.filter((_, i) => i !== index);
       setLocalRules(newRules);
     }
   };
 
   const handleReset = () => {
-    if (confirm('确定恢复到系统默认模版吗？')) {
-      setLocalRules(JSON.parse(JSON.stringify(INITIAL_RULES)));
+    if (window.confirm('确定要丢弃当前所有修改，恢复到系统初始默认模版吗？\n\n注意：此操作无法撤销。')) {
+      try {
+        const defaults = JSON.parse(JSON.stringify(INITIAL_RULES));
+        setLocalRules(defaults);
+      } catch (e) {
+        console.error("Reset failed", e);
+        alert("恢复失败，请刷新页面重试");
+      }
     }
   };
 
@@ -65,11 +72,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ rules, onSave, onClose })
       }
     };
     reader.readAsText(file);
-    // Reset input
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const saveAndClose = () => {
+    // Basic validation check
+    const invalidIds = localRules.filter(r => !/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(r.id));
+    if (invalidIds.length > 0) {
+      alert(`保存失败：以下ID不是有效的变量名 (只能包含字母、数字、下划线，不能以数字开头):\n${invalidIds.map(r => r.id).join(', ')}`);
+      return;
+    }
     onSave(localRules);
     onClose();
   };
@@ -94,7 +106,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ rules, onSave, onClose })
             <button onClick={addRule} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold hover:bg-blue-200 transition-colors">
               <Plus size={16} /> 添加列
             </button>
-            <button onClick={handleReset} className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition-colors">
+            <button onClick={handleReset} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-semibold hover:bg-red-200 transition-colors">
               <RotateCcw size={16} /> 恢复默认
             </button>
           </div>
@@ -139,15 +151,23 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ rules, onSave, onClose })
              </div>
              
              <div className="divide-y divide-gray-100">
-               {localRules.map((rule, index) => (
-                 <div key={index} className="grid grid-cols-12 gap-4 p-3 items-center hover:bg-blue-50/50 transition-colors">
-                    <div className="col-span-1">
+               {localRules.map((rule, index) => {
+                 const isIdValid = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(rule.id);
+                 return (
+                 <div key={rule.id || index} className="grid grid-cols-12 gap-4 p-3 items-center hover:bg-blue-50/50 transition-colors">
+                    <div className="col-span-1 relative group">
                       <input 
                         type="text" 
                         value={rule.id}
                         onChange={(e) => handleRuleChange(index, 'id', e.target.value)}
-                        className="w-full text-xs font-mono bg-gray-50 border border-gray-200 rounded px-2 py-1 text-gray-500 focus:outline-none focus:border-blue-400"
+                        className={`w-full text-xs font-mono bg-gray-50 border rounded px-2 py-1 focus:outline-none ${!isIdValid ? 'border-red-500 text-red-600 focus:border-red-500' : 'border-gray-200 text-gray-500 focus:border-blue-400'}`}
+                        title="变量名 (ID)"
                       />
+                      {!isIdValid && (
+                        <div className="absolute top-0 right-0 -mt-1 -mr-1 text-red-500" title="ID无效: 必须是有效变量名">
+                          <AlertTriangle size={12} fill="currentColor" className="bg-white rounded-full"/>
+                        </div>
+                      )}
                     </div>
                     <div className="col-span-2">
                       <input 
@@ -171,12 +191,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ rules, onSave, onClose })
                       <button 
                         onClick={() => removeRule(index)}
                         className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                        title="删除此行"
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
                  </div>
-               ))}
+               )})}
              </div>
           </div>
         </div>

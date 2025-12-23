@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HardHat, Code, Settings } from 'lucide-react';
+import { HardHat, Code, Settings, FileText } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import InputForm from './components/InputForm';
 import MaterialTable from './components/MaterialTable';
@@ -8,6 +8,7 @@ import SettingsModal from './components/SettingsModal';
 import { InputParams, MaterialItem, CalculationRule } from './types';
 import { calculateMaterials } from './utils/calculator';
 import { INITIAL_RULES } from './utils/initialRules';
+import { downloadPRD } from './utils/productDocs';
 
 const App: React.FC = () => {
   const [list, setList] = useState<MaterialItem[]>([]);
@@ -60,20 +61,28 @@ const App: React.FC = () => {
               <p className="text-xs text-gray-500 font-medium hidden sm:block">可自定义模版 / 实时预览</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
+             <button 
+               onClick={downloadPRD}
+               className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 bg-white hover:bg-blue-50 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-blue-200 transition-all shadow-sm"
+               title="下载项目需求文档 (PRD)"
+             >
+               <FileText size={16} />
+               <span className="hidden lg:inline">需求文档</span>
+             </button>
              <button 
                onClick={() => setShowSettingsModal(true)}
                className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blue-700 bg-white hover:bg-blue-50 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-blue-200 transition-all shadow-sm"
              >
                <Settings size={16} />
-               <span>设置模版</span>
+               <span className="hidden sm:inline">设置模版</span>
              </button>
              <button 
                onClick={() => setShowPythonModal(true)}
                className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-blue-200 transition-all"
              >
                <Code size={16} />
-               <span>获取桌面版 (Python)</span>
+               <span>获取桌面版</span>
              </button>
           </div>
         </div>
