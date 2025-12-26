@@ -16,7 +16,7 @@
 
 1. 安装依赖：
    `npm install`
-2. 设置 `GEMINI_API_KEY` 环境变量，在 [.env.local](.env.local) 文件中添加您的 Gemini API 密钥
+2. 如需要 AI 功能，可在 [.env.local](.env.local) 文件中添加 `GEMINI_API_KEY` 环境变量
 3. 启动应用：
    `npm run dev`
 
