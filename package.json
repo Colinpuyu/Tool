@@ -2,11 +2,29 @@
   "name": "construction-enclosure-calculator",
   "private": true,
   "version": "0.0.0",
+  "main": "electron-main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron-dev": "electron .",
+    "electron-build": "npm run build && electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.example.construction-calculator",
+    "productName": "建筑围护结构计算器",
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "dependencies": {
     "uuid": "^13.0.0",

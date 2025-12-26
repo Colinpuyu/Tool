@@ -1,0 +1,80 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build application
+      run: npm run build
+
+    - name: Install Electron dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        npm install --save-dev electron electron-builder electron-is-dev
+        npx electron-builder --win --x64 --publish=never
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install Electron dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        npm install --save-dev electron electron-builder electron-is-dev
+        npx electron-builder --mac --x64 --publish=never
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install Electron dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-3-dev libnss3-dev libatk1.0-dev libdrm-dev libxss-dev libgtk-3-0 libgbm1
+        npm install --save-dev electron electron-builder electron-is-dev
+        npx electron-builder --linux --x64 --publish=never
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload artifacts (Windows)
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-app
+        path: |
+          release/*.exe
+          !release/*.blockmap
+
+    - name: Upload artifacts (macOS)
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-app
+        path: release/*.dmg
+
+    - name: Upload artifacts (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-app
+        path: release/*.AppImage
