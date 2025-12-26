@@ -57,6 +57,9 @@ const App: React.FC = () => {
               <h1 className="text-xl font-bold text-gray-900 tracking-tight">围挡清单计算系统</h1>
               <p className="text-xs text-gray-500 font-medium hidden sm:block">施工材料精准计算工具</p>
             </div>
+            <div className="hidden md:block text-xs text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
+              v1.0.0 - 支持本地计算，无需网络连接
+            </div>
           </div>
           <div className="flex items-center gap-3">
              <button 
@@ -101,7 +104,7 @@ const App: React.FC = () => {
       )}
       
       <footer className="max-w-7xl mx-auto text-center py-8 text-gray-400 text-sm">
-         &copy; {new Date().getFullYear()} Construction Enclosure Calculator | 专业施工计算工具
+         &copy; {new Date().getFullYear()} Construction Enclosure Calculator v1.0.0 | 专业施工计算工具
       </footer>
     </div>
   );
