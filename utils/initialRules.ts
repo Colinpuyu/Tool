@@ -4,7 +4,7 @@ export const INITIAL_RULES: CalculationRule[] = [
   { 
     id: "plate", 
     label: "洞洞板1", 
-    formula: "D ? (L+W)*2-2 : (L+W)*2-MAX(L,W)" 
+    formula: "L === 1 ? W * 2 + 1 : (D ? (L + W) * 2 - 2 : (L + W) * 2 - MAX(L, W))" 
   },
   { 
     id: "pole1", 

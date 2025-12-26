@@ -6,8 +6,9 @@ export const calculateMaterials = (
   isEnclosed: boolean,
   rules: CalculationRule[]
 ): CalculatedResult => {
-  const L = Number(length) || 0;
-  const W = Number(width) || 0;
+  // Ensure L and W are positive integers and at least 1
+  const L = Math.max(1, Math.floor(Number(length) || 1));
+  const W = Math.max(1, Math.floor(Number(width) || 1));
   const D = isEnclosed ? 1 : 0;
   
   const results: Record<string, number> = {};
@@ -28,13 +29,9 @@ export const calculateMaterials = (
 
   rules.forEach(rule => {
     try {
-      // Combine base context with accumulated results
-      // We must spread results so subsequent formulas can reference previous values
       const context = { ...baseContext, ...results };
 
-      // CRITICAL FIX: Filter keys to ensure they are valid JavaScript identifiers.
-      // If 'results' contains a key like "invalid-id" or "123", passing it to new Function()
-      // as an argument name throws a SyntaxError (Invalid token) before execution starts.
+      // Filter valid JS identifiers
       const validEntries = Object.entries(context).filter(([key]) => 
         /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key)
       );
@@ -42,13 +39,13 @@ export const calculateMaterials = (
       const keys = validEntries.map(([k]) => k);
       const values = validEntries.map(([, v]) => v);
 
-      // Safe evaluation using Function constructor
-      // If the formula references a variable that was filtered out (due to invalid ID),
-      // it will throw a ReferenceError (caught below) instead of crashing with SyntaxError.
       const func = new Function(...keys, `return ${rule.formula};`);
       
-      const value = func(...values);
-      results[rule.id] = typeof value === 'number' && !isNaN(value) ? value : 0;
+      let value = func(...values);
+      
+      // Ensure result is a valid number and at least 0
+      value = typeof value === 'number' && !isNaN(value) ? value : 0;
+      results[rule.id] = Math.max(0, value); 
       
     } catch (error) {
       console.warn(`Error calculating rule ${rule.id} (${rule.label}):`, error);
