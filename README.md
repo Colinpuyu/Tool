@@ -21,7 +21,7 @@
 
 ## 桌面应用构建
 
-### GitHub Actions 自动构建
+### GitHub Actions 自动构建（推荐）
 
 项目配置了 GitHub Actions，可自动为 Windows、macOS 和 Linux 生成桌面应用：
 
@@ -36,5 +36,19 @@
 ```bash
 npm run electron-build
 ```
+
+> **注意**：如果遇到 `electron-builder: command not found` 错误，请先安装开发依赖：
+> 
+> ```bash
+> npm install --save-dev electron electron-builder electron-is-dev
+> ```
+> 
+> **如果在 macOS 上遇到权限错误**，请使用以下命令修复 npm 缓存权限：
+> 
+> ```bash
+> sudo chown -R $(whoami) ~/.npm
+> ```
+> 
+> 然后再运行构建命令。
 
 这将生成适用于当前操作系统的桌面应用安装程序。
