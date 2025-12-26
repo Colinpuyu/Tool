@@ -1,12 +1,8 @@
 # 建筑围护结构计算器
 
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+建筑围护结构计算器是一个专门用于计算施工围护材料的工具，帮助工程团队快速准确地计算所需材料数量。
 
-建筑围护结构计算器是一个用于计算施工材料的工具，支持多种计算规则和材料清单导出功能。
-
-## 功能特点
+## 主要功能
 
 - 参数录入：输入工种/区域名称、长度、宽度和封闭状态
 - 实时计算：根据预设规则自动计算所需材料数量
@@ -24,24 +20,22 @@
 3. 启动应用：
    `npm run dev`
 
-## 打包为桌面应用
+## 桌面应用构建
 
-### 使用 GitHub Actions 自动构建
+### GitHub Actions 自动构建
 
-本项目已配置 GitHub Actions，可自动为 Windows、macOS 和 Linux 生成桌面应用安装程序：
+项目配置了 GitHub Actions，可自动为 Windows、macOS 和 Linux 生成桌面应用：
 
-1. 将项目推送到 GitHub 仓库
-2. 推送代码到 main 分支以触发构建
-3. 在 Actions 标签页中下载构建产物
+1. 推送代码到 GitHub 仓库的 main 分支
+2. Actions 自动触发跨平台构建
+3. 在 Actions 标签页下载对应平台的安装程序
 
-详细配置请查看 [GITHUB_ACTIONS.md](GITHUB_ACTIONS.md) 文件。
+### 本地构建
 
-### 手动构建
+在相应操作系统上运行：
 
-您也可以在相应操作系统上手动构建：
+```bash
+npm run electron-build
+```
 
-- Windows: `npm run electron-build`
-- macOS: `npm run electron-build`
-- Linux: `npm run electron-build`
-
-更多信息请查看 [DEPLOYMENT.md](DEPLOYMENT.md) 文件。
+这将生成适用于当前操作系统的桌面应用安装程序。
