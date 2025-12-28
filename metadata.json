@@ -1,5 +1,5 @@
 {
-  "name": "Construction Enclosure Calculator Desktop",
-  "description": "Refactored Python + Qt application for construction enclosure planning with dynamic formula support.",
+  "name": "Construction Enclosure Calculator QT",
+  "description": "Native Python PySide6 application for enclosure material calculation.",
   "requestFramePermissions": []
 }
