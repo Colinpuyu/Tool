@@ -1,43 +1,22 @@
 {
-  "name": "construction-enclosure-calculator",
+  "name": "construction-enclosure-calculator-desktop",
   "private": true,
   "version": "0.0.0",
-  "main": "electron-main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "electron-dev": "electron .",
-    "electron-build": "npm run build && electron-builder --win --x64"
-  },
-  "build": {
-    "appId": "com.example.construction-calculator",
-    "productName": "建筑围护结构计算器",
-    "directories": {
-      "output": "release"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "public/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+    "preview": "vite preview"
   },
   "dependencies": {
-    "uuid": "^13.0.0",
+    "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "lucide-react": "^0.562.0",
-    "react": "^19.2.3"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
-    "electron": "^33.2.1",
-    "electron-builder": "^26.0.12",
-    "electron-is-dev": "^3.0.1",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

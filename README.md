@@ -1,54 +1,20 @@
-# 建筑围护结构计算器
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-建筑围护结构计算器是一个专门用于计算施工围护材料的工具，帮助工程团队快速准确地计算所需材料数量。
+# Run and deploy your AI Studio app
 
-## 主要功能
+This contains everything you need to run your app locally.
 
-- 参数录入：输入工种/区域名称、长度、宽度和封闭状态
-- 实时计算：根据预设规则自动计算所需材料数量
-- 材料清单：以表格形式展示详细的材料清单
-- 数据导出：支持导出为 CSV 格式
-- 规则配置：可自定义计算规则
+View your app in AI Studio: https://ai.studio/apps/drive/1vfb_Ng18TpVbpsXnI6WxKi8YNM1BezZ4
 
-## 本地运行
+## Run Locally
 
-**前置条件：** Node.js
+**Prerequisites:**  Node.js
 
-1. 安装依赖：
+
+1. Install dependencies:
    `npm install`
-2. 启动应用：
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
    `npm run dev`
-
-## 桌面应用构建
-
-### GitHub Actions 自动构建（推荐）
-
-项目配置了 GitHub Actions，可自动为 Windows、macOS 和 Linux 生成桌面应用：
-
-1. 推送代码到 GitHub 仓库的 main 分支
-2. Actions 自动触发跨平台构建
-3. 在 Actions 标签页下载对应平台的安装程序
-
-### 本地构建
-
-在相应操作系统上运行：
-
-```bash
-npm run electron-build
-```
-
-> **注意**：如果遇到 `electron-builder: command not found` 错误，请先安装开发依赖：
-> 
-> ```bash
-> npm install --save-dev electron electron-builder electron-is-dev
-> ```
-> 
-> **如果在 macOS 上遇到权限错误**，请使用以下命令修复 npm 缓存权限：
-> 
-> ```bash
-> sudo chown -R $(whoami) ~/.npm
-> ```
-> 
-> 然后再运行构建命令。
-
-这将生成适用于当前操作系统的桌面应用安装程序。
